@@ -91,7 +91,7 @@ if __name__ == '__main__':
     }
     response_home = makeRequest(url, headers)
     dics = getLocations(response_home)
-    shanxi_dics = {'山西':dics['山西']}
+    shanxi_dics = {'山西':dics['山西']} # 假定只爬取山西
     # 最终的urls字典及列表
     shanxi_dics = getListItems(shanxi_dics, headers)
     print(shanxi_dics)
