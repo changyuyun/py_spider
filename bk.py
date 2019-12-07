@@ -80,7 +80,58 @@ def getListItems(dics, headers):
         break
     return dics
 
-# 获取下一页列表链接
+# 获取详情页数据并存储到文件中
+def getInfoAndSave(dics,headers):
+    for province,city_dics in dics.items():
+        for city,url_list in city_dics.items():
+        	# 写入文件
+            fileName = province+'-'+city+'-bk.txt'
+            for url in url_list:
+                response = makeRequest(url,headers)
+                html = etree.HTML(response.text)
+                project_name_list = html.xpath('//h2[@class="DATA-PROJECT-NAME"]/text()') # 项目名称列表
+                price_list = html.xpath('(//div[@class="price"])[1]/span[@class="price-number"]/text()') #项目单价列表
+                address_list = html.xpath('(//div[@class="middle-info animation"])[1]/ul/li/span[@class="content"]/text()') # 项目地址列表
+                project_name = ''
+                price = ''
+                address = ''
+                if len(project_name_list) > 0:
+                    project_name = project_name_list[0].strip()
+
+                if len(price_list) > 0:
+                    price = price_list[0].strip()
+
+                if len(address_list) > 0:
+                    address = address_list[0].strip()
+                content = "项目名称："+project_name+"\t项目地址："+address+"\t单价："+price+"\n"
+                print(content)
+                f = open(fileName, 'a')
+                f.write(content.encode("gbk",'ignore').decode("gbk", "ignore"))
+                f.close()
+
+
+def testA(headers):
+    url = 'https://yuncheng.fang.ke.com/loupan/p_xghybkcuj/'
+    response = makeRequest(url,headers)
+    html = etree.HTML(response.text)
+    project_name_list = html.xpath('//h2[@class="DATA-PROJECT-NAME"]/text()') # 项目名称列表
+    price_list = html.xpath('(//div[@class="price"])[1]/span[@class="price-number"]/text()') #项目单价列表
+    address_list = html.xpath('(//div[@class="middle-info animation"])[1]/ul/li/span[@class="content"]/text()') # 项目地址列表
+    project_name = ''
+    price = ''
+    address = ''
+    if len(project_name_list) > 0:
+        project_name = project_name_list[0].strip()
+
+    if len(price_list) > 0:
+        price = price_list[0].strip()
+
+    if len(address_list) > 0:
+        address = address_list[0].strip()
+    print(project_name)
+    print(price)
+    print(address)
+    content = "项目名称："+project_name+"\t项目地址："+address+"\t单价："+price+"\n"
 
 
 if __name__ == '__main__':
@@ -89,9 +140,12 @@ if __name__ == '__main__':
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
     }
+    # testA(headers)
     response_home = makeRequest(url, headers)
     dics = getLocations(response_home)
+    # 爬取山西房源
     shanxi_dics = {'山西':dics['山西']} # 假定只爬取山西
     # 最终的urls字典及列表
     shanxi_dics = getListItems(shanxi_dics, headers)
-    print(shanxi_dics)
+    # print(shanxi_dics)
+    getInfoAndSave(shanxi_dics,headers)
