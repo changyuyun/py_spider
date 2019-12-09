@@ -7,9 +7,10 @@ class Crack_bb(object):
         self.url = URL
         self.email = EMAIL
         self.password = PASSWORD
-        self.brower = webdriver.Chrome()
+        self.brower = webdriver.chrome
     def __del__(self):
-        self.brower.close()
+        # self.brower.close()
+        print(1)
     def crack_login(self):
         print(1)
     def open(self):
