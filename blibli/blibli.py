@@ -1,6 +1,6 @@
 #coding:utf-8
-from utils.config import *
 from selenium import webdriver
+from request.spider.blibli.utils.config import *
 
 class Crack_bb(object):
     def __init__(self):
